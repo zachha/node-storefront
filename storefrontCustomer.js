@@ -22,7 +22,6 @@ connection.connect(function(err) {
   //populates/displays database products to user
   selectAll();
   //prompts user to purchase products
-  connection.end();
 });
 //populates the table from the database and displays to user
 function selectAll() {
@@ -30,12 +29,13 @@ function selectAll() {
     if (err) throw err;
     for(i=0;i<res.length;i++) {
         table.push(
-            [res[i].item_id,
+            [
+            res[i].item_id,
             res[i].product_name,
             res[i].department_name,
             res[i].price,
-            res[i].stock_quantity]
-        );
+            res[i].stock_quantity
+            ]);
     }
     console.log(table.toString());
     purchaseProduct(res);
@@ -59,20 +59,21 @@ function purchaseProduct(res) {
       .then(answers => {
         let productIndex = (answers.productId-1);
         let newStock = (res[productIndex].stock_quantity) - (answers.amountPurchased);
+        let purchasePrice = res[productIndex].price * answers.amountPurchased;
         //put some validation here if I have time
         if(answers.productId < 1 || answers.productId > res.length) {
             console.log("Please enter a valid product ID");
         }else if(answers.amountPurchased > res[productIndex].stock_quantity) {
             console.log("Insuffucient Quantity!");
         } else {
-            console.log("Updating " + res[productIndex].product_name);
-            updateStock(res, productIndex, newStock);
+            console.log("\nUpdating " + res[productIndex].product_name);
+            updateStock(res, productIndex, newStock, purchasePrice);
         }
     
       });
 }
 
-function updateStock(res, productIndex, newStock) {
+function updateStock(res, productIndex, newStock, purchasePrice) {
     var query = connection.query(
       "UPDATE products SET ? WHERE ?",
       [
@@ -85,8 +86,9 @@ function updateStock(res, productIndex, newStock) {
       ],
       function(err, res) {
         if (err) throw err;
-        console.log(res.affectedRows + " playlist updated");
-        console.log("New stock is: " + newStock);
+        console.log("\n" + res.affectedRows + " product updated");
+        console.log("\nNew stock is: " + newStock);
+        console.log("\nThe price of the product you purchased was: $" + purchasePrice);
       }
     );
     connection.end();
