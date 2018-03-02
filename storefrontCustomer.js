@@ -21,7 +21,7 @@ connection.connect(function(err) {
   console.log("connected as id " + connection.threadId);
   //populates/displays database products to user
   selectAll();
-
+  //prompts user to purchase products
   connection.end();
 });
 //populates the table from the database and displays to user
@@ -38,6 +38,56 @@ function selectAll() {
         );
     }
     console.log(table.toString());
+    purchaseProduct(res);
   });
 }
 
+//user selects item and amount to purchase, database is checked and updated if appropriate
+function purchaseProduct(res) {
+    inquirer.prompt([
+        {
+          type: "input",
+          name: "productId",
+          message: "Please input ID of product you would like to purchase"
+        },
+        {
+          type: "input",
+          name: "amountPurchased",
+          message: "How many units would you like to purchase?"
+        }
+      ])
+      .then(answers => {
+        let productIndex = (answers.productId-1);
+        let newStock = (res[productIndex].stock_quantity) - (answers.amountPurchased);
+        //put some validation here if I have time
+        if(answers.productId < 1 || answers.productId > res.length) {
+            console.log("Please enter a valid product ID");
+        }else if(answers.amountPurchased > res[productIndex].stock_quantity) {
+            console.log("Insuffucient Quantity!");
+        } else {
+            console.log("Updating " + res[productIndex].product_name);
+            updateStock(res, productIndex, newStock);
+        }
+    
+      });
+}
+
+function updateStock(res, productIndex, newStock) {
+    var query = connection.query(
+      "UPDATE products SET ? WHERE ?",
+      [
+        {
+          stock_quantity: newStock
+        },
+        {
+          item_id: res[productIndex].item_id
+        }
+      ],
+      function(err, res) {
+        if (err) throw err;
+        console.log(res.affectedRows + " playlist updated");
+        console.log("New stock is: " + newStock);
+      }
+    );
+    connection.end();
+}
