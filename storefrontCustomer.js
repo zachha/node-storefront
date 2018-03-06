@@ -86,6 +86,7 @@ function updateStock(res, productIndex, newStock, purchasePrice) {
         if (err) throw err;
         console.log("\nproduct updated");
         console.log("\nNew stock is: " + newStock);
+        console.log("\nThe cost of your purchase was: " + purchasePrice);
       }
     );
     connection.end();

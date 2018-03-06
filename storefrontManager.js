@@ -9,11 +9,11 @@ var connection = mysql.createConnection({
     password: 'clazlaZ1!2345',
     database: 'node_storefrontdb'
 });
-
+//outlines a table containing the product information from the database
 let table = new Table({
   head: ["Item ID", "Product Name", "Department", "Price", "Stock"]
 });
-
+// asks manager what action they would like to take
 inquirer.prompt([
     {
     type: "list",
@@ -25,25 +25,28 @@ inquirer.prompt([
             "Add New Product"]
     }
   ]).then(answers => {
+        console.log(answers.viewProducts);
         const selection = answers.viewProducts;
-        function doAction(selection) {
-            let actions = {
-                'View Products for Sale': function() {
-
-                },
-                'View Low Inventory': function() {
-
-                },
-                'Add to Inventory': function() {
-
-                },
-                'Add New Product': function() {
-
-                }
-            };
-            return (actions[selection])();
-        }
+        doAction(selection);
   });
+// object literal that runs the appropriate functions depending on the action chosen
+function doAction(selection) {
+  let actions = {
+    "View Products for Sale": function() {
+      viewInv();
+    },
+    "View Low Inventory": function() {
+      viewLowInv();
+    },
+    "Add to Inventory": function() {
+      addInv();
+    },
+    "Add New Product": function() {
+      addProduct();
+    }
+  };
+  return actions[selection]();
+}
 
 function viewInv() {
     connection.query("SELECT * FROM products", function(err, res) {
@@ -95,6 +98,7 @@ function addInv() {
       ])
       .then(answers => {
         let data = viewInv();
+        console.log(data);
         let productIndex = (answers.productId-1);
         let newStock = (data[productIndex].stock_quantity) + (answers.amountAdded);
         //put some validation here if I have time
@@ -127,4 +131,45 @@ function updateStock(data, productIndex, newStock) {
       }
     );
     connection.end();
+}
+
+function addProduct() {
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "productName",
+          message: "Please input the name of the Product to add"
+        },
+        {
+          type: "input",
+          name: "productDepartment",
+          message: "Please enter the department of the product"
+        },
+        {
+          type: "input",
+          name: "productPrice",
+          message: "Please enter the price of the product"
+        },
+        {
+          type: "input",
+          name: "productStock",
+          message: "Please enter the amount of product you would like to obtain"
+        }
+      ])
+      .then(answers => {
+          let query = connection.query(
+            "INSERT INTO products SET ?",
+            {
+                product_name: answers.productName,
+                department_name: answers.productDepartment,
+                price: answers.productPrice,
+                stock_quantity: answers.productStock
+            },
+            function(err, res) {
+              if (err) throw err;
+              console.log("\n New Product Inserted");
+            }
+          );
+      });
 }
