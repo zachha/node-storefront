@@ -22,5 +22,42 @@ inquirer.prompt([
             "View Low Inventory",
             "Add to Inventory",
             "Add New Product"]
-  }
+  }.then(answers => {
+
+
+  });
 ]);
+
+function viewInv(answers) {
+    connection.query("SELECT * FROM products", function(err, res) {
+        if (err) throw err;
+        for (i=0;i<res.length,i++) {
+            table.push([
+                res[i].item_id,
+                res[i].product_name,
+                res[i].department_name,
+                res[i].price,
+                res[i].stock_quantity
+            ]);
+        }
+        console.log(table.toString());
+    })
+}
+
+function viewLowInv(answers) {
+    connection.query("SELECT * FROM products", function(err, res) {
+        if (err) throw err;
+        for (i=0;i<res.length,i++) {
+            if(res[i].stock_quantity < 5) {
+                table.push([
+                res[i].item_id,
+                res[i].product_name,
+                res[i].department_name,
+                res[i].price,
+                res[i].stock_quantity
+                ]);
+            }
+        }
+        console.log(table.toString());
+    });
+}
