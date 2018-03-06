@@ -68,7 +68,6 @@ function purchaseProduct(res) {
             console.log("\nUpdating " + res[productIndex].product_name);
             updateStock(res, productIndex, newStock, purchasePrice);
         }
-    
       });
 }
 
@@ -85,9 +84,8 @@ function updateStock(res, productIndex, newStock, purchasePrice) {
       ],
       function(err, res) {
         if (err) throw err;
-        console.log("\n" + res.affectedRows + " product updated");
+        console.log("\nproduct updated");
         console.log("\nNew stock is: " + newStock);
-        console.log("\nThe price of the product you purchased was: $" + purchasePrice);
       }
     );
     connection.end();
