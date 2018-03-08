@@ -17,8 +17,26 @@ CREATE TABLE departments(
 	department_id INTEGER(100) NOT NULL AUTO_INCREMENT,
 	department_name VARCHAR(100) NOT NULL,
 	over_head_costs DECIMAL(7,2) NOT NULL,
-	PRIMARY KEY (department_name)
+	PRIMARY KEY (department_id)
 );
+
+INSERT INTO departments(department_name, over_head_costs)
+VALUES ("Video Games", "1200.00");
+
+INSERT INTO departments(department_name, over_head_costs)
+VALUES ("Movies and Television", "845.00");
+
+INSERT INTO departments(department_name, over_head_costs)
+VALUES ("Books", "589.00");
+
+INSERT INTO departments(department_name, over_head_costs)
+VALUES ("Home Audio and Theater", "1000.00");
+
+INSERT INTO departments(department_name, over_head_costs)
+VALUES ("Home & Kitchen", "735.00");
+
+INSERT INTO departments(department_name, over_head_costs)
+VALUES ("Electronics", "6000.00");
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ("Monster Hunter World", "Video Games", "59.99", "50");
