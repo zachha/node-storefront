@@ -1,8 +1,8 @@
-var mysql = require("mysql");
-var inquirer = require("inquirer");
-var Table = require("cli-table");
+const mysql = require("mysql");
+const inquirer = require("inquirer");
+const Table = require("cli-table");
 
-var connection = mysql.createConnection({
+const connection = mysql.createConnection({
     host: 'localhost',
     port: '3306',
     user: 'root',
@@ -84,6 +84,7 @@ function viewLowInv() {
 }
 
 function addInv() {
+    var data = viewInv();
     inquirer.prompt([
         {
           type: "input",
@@ -97,7 +98,6 @@ function addInv() {
         }
       ])
       .then(answers => {
-        let data = viewInv();
         console.log(data);
         let productIndex = (answers.productId-1);
         let newStock = (data[productIndex].stock_quantity) + (answers.amountAdded);

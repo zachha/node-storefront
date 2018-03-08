@@ -59,6 +59,7 @@ function purchaseProduct(res) {
         let productIndex = (answers.productId-1);
         let newStock = (res[productIndex].stock_quantity) - (answers.amountPurchased);
         let purchasePrice = res[productIndex].price * answers.amountPurchased;
+        let newSales = (res[productIndex].product_sales) + purchasePrice
         //put some validation here if I have time
         if(answers.productId < 1 || answers.productId > res.length) {
             console.log("Please enter a valid product ID");
@@ -66,17 +67,18 @@ function purchaseProduct(res) {
             console.log("Insuffucient Quantity!");
         } else {
             console.log("\nUpdating " + res[productIndex].product_name);
-            updateStock(res, productIndex, newStock, purchasePrice);
+            updateStock(res, productIndex, newStock, purchasePrice, newSales);
         }
       });
 }
 
-function updateStock(res, productIndex, newStock, purchasePrice) {
+function updateStock(res, productIndex, newStock, purchasePrice, newSales) {
     var query = connection.query(
       "UPDATE products SET ? WHERE ?",
       [
         {
-          stock_quantity: newStock
+          stock_quantity: newStock,
+          product_sales: newSales
         },
         {
           item_id: res[productIndex].item_id
@@ -86,7 +88,7 @@ function updateStock(res, productIndex, newStock, purchasePrice) {
         if (err) throw err;
         console.log("\nproduct updated");
         console.log("\nNew stock is: " + newStock);
-        console.log("\nThe cost of your purchase was: " + purchasePrice);
+        console.log("\nThe cost of your purchase was: " + purchasePrice.toFixed(2));
       }
     );
     connection.end();
