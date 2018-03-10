@@ -42,7 +42,8 @@ INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ("Monster Hunter World", "Video Games", "59.99", "50");
 
 ALTER TABLE products
-MODIFY COLUMN product_sales decimal(8,2) NOT NULL;
+MODIFY COLUMN product_sales decimal(8,2) DEFAULT 0;
 UPDATE products SET product_sales = 0;
+
 
 SELECT * FROM products 

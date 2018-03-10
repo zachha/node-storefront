@@ -7,6 +7,7 @@ node-storefront is a node.js CLI application linked to a mySQL database.  The ap
 * storefrontSupervisor
 
 #### storefrontCustomer
+![customer image] (/images/customer.png)
 
 This interface displays a table that displays the inventory information from the sql database file.  It displays the item's ID, Name, Department, Price, and Stock.  The user is prompted to input an ID number for the item they would like to purchase and the amount of stock they would like to purchase.  The database stock is updated and the purchase cost is returned to the user. 
 
@@ -33,14 +34,14 @@ This interface gives the user two options:
     Prompts the user for information to create a new department and push it to the database.
 
 
-### Prerequisites 
+## Prerequisites 
 
 node-storefront requires the following npm packages:
 - mysql
 - inquirer
 - cli-table
 
-### Installing
+## Installing
 
 ```
 npm install mysql inquirer cli-table
@@ -59,4 +60,9 @@ node storefrontManager
 ```
 node storefrontSupervisor
 ```
+## Contact Me
 
+This application was created by **Zach Harmon** [Github](https://github.com/zachha) 
+
+If you have any questions or need to contact me I can be reached at 
+zachha@gmail.com
