@@ -13,4 +13,23 @@ node-storefront requires the following npm packages:
 - inquirer
 - cli-table
 
-The application also requires a mysql database 
+### Installing
+
+```
+npm install mysql inquirer cli-table
+```
+once installed, run one of the three user interfaces for the application:
+
+```
+node storefrontCustomer
+```
+
+```
+node storefrontManager
+```
+
+```
+node storefrontSupervisor
+```
+
+## Deployment
