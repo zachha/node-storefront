@@ -2,6 +2,7 @@ const mysql = require("mysql");
 const inquirer = require("inquirer");
 const Table = require("cli-table");
 
+
 const connection = mysql.createConnection({
     host: 'localhost',
     port: '3306',
@@ -25,7 +26,6 @@ inquirer.prompt([
             "Add New Product"]
     }
   ]).then(answers => {
-        console.log(answers.viewProducts);
         const selection = answers.viewProducts;
         doAction(selection);
   });
@@ -48,7 +48,7 @@ function doAction(selection) {
   return actions[selection]();
 }
 
-function viewInv() {
+function viewInv(tableData) {
     connection.query("SELECT * FROM products", function(err, res) {
         if (err) throw err;
         for (i=0;i<res.length;i++) {
@@ -61,7 +61,7 @@ function viewInv() {
             ]);
         }
         console.log(table.toString());
-        return res;
+        tableData = res;
     })
 }
 
@@ -84,7 +84,9 @@ function viewLowInv() {
 }
 
 function addInv() {
-    var data = viewInv();
+    // I think I have an async problem, inquirer looks like it fires before the table comes through from the viewInv function then I have to hit a keyboard button for the prompt to show up again
+    let tableData;
+    viewInv(tableData);
     inquirer.prompt([
         {
           type: "input",
@@ -98,22 +100,21 @@ function addInv() {
         }
       ])
       .then(answers => {
-        console.log(data);
         let productIndex = (answers.productId-1);
-        let newStock = (data[productIndex].stock_quantity) + (answers.amountAdded);
+        let newStock = (parseInt(tableData[productIndex].stock_quantity)) + (parseInt(answers.amountAdded));
         //put some validation here if I have time
-        if(answers.productId < 1 || answers.productId > data.length) {
+        if(answers.productId < 1 || answers.productId > tableData.length) {
             console.log("Please enter a valid product ID");
-        }else if(answers.amountPurchased > data[productIndex].stock_quantity) {
+        }else if(answers.amountPurchased > tableData[productIndex].stock_quantity) {
             console.log("Insuffucient Quantity!");
         } else {
-            console.log("\nUpdating " + data[productIndex].product_name);
-            updateStock(data, productIndex, newStock);
+            console.log("\nUpdating " + tableData[productIndex].product_name);
+            updateStock(tableData, productIndex, newStock);
         }
       });
 }
 
-function updateStock(data, productIndex, newStock) {
+function updateStock(tableData, productIndex, newStock) {
     var query = connection.query(
       "UPDATE products SET ? WHERE ?",
       [
@@ -121,7 +122,7 @@ function updateStock(data, productIndex, newStock) {
           stock_quantity: newStock
         },
         {
-          item_id: data[productIndex].item_id
+          item_id: tableData[productIndex].item_id
         }
       ],
       function(err, data) {
