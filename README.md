@@ -7,7 +7,7 @@ node-storefront is a node.js CLI application linked to a mySQL database.  The ap
 * storefrontSupervisor
 
 #### storefrontCustomer
-![customer image] (/images/customer.png)
+![customer image] (images/customer.png)
 
 This interface displays a table that displays the inventory information from the sql database file.  It displays the item's ID, Name, Department, Price, and Stock.  The user is prompted to input an ID number for the item they would like to purchase and the amount of stock they would like to purchase.  The database stock is updated and the purchase cost is returned to the user. 
 
