@@ -34,7 +34,7 @@ This creates and displays a table that shows all inventory that has less than 5 
 
 Prompts the user to input a value to add to an item's stock.
 
-![manager add inventory]()
+![manager add inventory](images/manager-addstock.png)
 
 * Add New Product
 
@@ -51,7 +51,7 @@ This interface gives the user two options:
 
 Creates and displays a table that shows department: id, name, overhead costs, product sales, and total profit.
 
-![supervisor view department table]()
+![supervisor view department table](images/supervisor-viewdepartment.png)
 
 * Create New Department
 

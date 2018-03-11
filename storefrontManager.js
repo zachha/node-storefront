@@ -33,13 +33,15 @@ inquirer.prompt([
 function doAction(selection) {
   let actions = {
     "View Products for Sale": function() {
+      let addAction = false;
       viewInv();
     },
     "View Low Inventory": function() {
       viewLowInv();
     },
     "Add to Inventory": function() {
-      viewInv(addInv());
+      addAction = true;
+      viewInv(addAction);
     },
     "Add New Product": function() {
       addProduct();
@@ -47,8 +49,8 @@ function doAction(selection) {
   };
   return actions[selection]();
 }
-
-function viewInv(tableData) {
+//creates and displays the same table the customer sees to the manager
+function viewInv(addAction) {
     connection.query("SELECT * FROM products", function(err, res) {
         if (err) throw err;
         for (i=0;i<res.length;i++) {
@@ -61,10 +63,13 @@ function viewInv(tableData) {
             ]);
         }
         console.log(table.toString());
-        tableData = res;
+        let tableData = res;
+        if(addAction === true) {
+            addInv(tableData);
+        }
     });
 }
-
+//creates and displays a table of inventory with stock under 5 units to the manager
 function viewLowInv() {
     connection.query("SELECT * FROM products", function(err, res) {
         if (err) throw err;
@@ -82,11 +87,8 @@ function viewLowInv() {
         console.log(table.toString());
     });
 }
-
-function addInv() {
-    // I think I have an async problem, inquirer looks like it fires before the table comes through from the viewInv function then I have to hit a keyboard button for the prompt to show up again
-    let tableData;
-    viewInv(tableData);
+//prompts the manager and adds stock in the database for the selected inventory
+function addInv(tableData) {
     inquirer.prompt([
         {
           type: "input",
@@ -133,7 +135,7 @@ function updateStock(tableData, productIndex, newStock) {
     );
     connection.end();
 }
-
+//prompts manager and adds new specified product to the inventory
 function addProduct() {
     inquirer
       .prompt([

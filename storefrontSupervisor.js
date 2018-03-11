@@ -1,3 +1,4 @@
+//required packages
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const Table = require("cli-table");
@@ -9,11 +10,13 @@ const connection = mysql.createConnection({
   password: "clazlaZ1!2345",
   database: "node_storefrontdb"
 });
+
 //outlines a table containing the product information from the database
 let table = new Table({
   head: ["Department ID", "Department Name", "Overhead Costs", "Product Sales", "Total Profit"]
 });
-// asks manager what action they would like to take
+
+// asks supervisor what action they would like to take
 inquirer
   .prompt([
     {
@@ -30,6 +33,7 @@ inquirer
     const selection = answers.supervisor;
     doAction(selection);
   });
+
 // object literal that runs the appropriate functions depending on the action chosen
 function doAction(selection) {
   let actions = {
@@ -43,10 +47,11 @@ function doAction(selection) {
   return actions[selection]();
 }
 
+//creates and displays a table of the store departments and creates a temporary column displaying total profits for each department
 function viewDepartment() {
     // this is the wordiest query in the world
     connection.query(
-      "SELECT departments.department_id, departments.department_name, departments.over_head_costs, SUM(products.product_sales) AS sales FROM products JOIN departments ON products.department_name = departments.department_name GROUP BY departments.department_name ORDER BY departments.department_id",
+      "SELECT departments.department_id, departments.department_name, departments.over_head_costs, SUM(products.product_sales) AS sales, SUM(products.product_sales) - departments.over_head_costs AS profit FROM products JOIN departments ON products.department_name = departments.department_name GROUP BY departments.department_name ORDER BY departments.department_id",
       (err, res) => {
         if (err) throw err;
         for (i = 0; i < res.length; i++) {
@@ -54,28 +59,17 @@ function viewDepartment() {
             res[i].department_id,
             res[i].department_name,
             res[i].over_head_costs,
-            res[i].sales
-            //res[i].profit
+            res[i].sales,
+            res[i].profit
           ]);
         }
         console.log(table.toString());
-        /*
-        connection.query("SELECT ", (err, res) => {
-            if(err) throw err;
-            for (i=0;i<res.length;i++) {
-                table.push([
-                    res[i].profit
-                ]);
-            }
-            console.log(table.toString());
-        });
-    
-        */
       }
       
     );
 }
 
+//prompts the supervisor and creates specified department in the database
 function addDepartment() {
   inquirer
     .prompt([
