@@ -86,6 +86,10 @@ node storefrontManager
 ```
 node storefrontSupervisor
 ```
+## Things to Improve
+
+Planning on adding validation for the inputs and a back/quit option after each action chosen in the three interfaces.
+
 ## Contact Me
 
 This application was created by **Zach Harmon** [Github](https://github.com/zachha) 
