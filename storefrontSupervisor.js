@@ -34,13 +34,46 @@ inquirer
 function doAction(selection) {
   let actions = {
     "View Product Sales by Department": function() {
-      viewInv();
+      viewDepartment();
     },
     "Create New Department": function() {
       addDepartment();
     }
   };
   return actions[selection]();
+}
+
+function viewDepartment() {
+    // this is the wordiest query in the world
+    connection.query(
+      "SELECT departments.department_id, departments.department_name, departments.over_head_costs, SUM(products.product_sales) AS sales FROM products JOIN departments ON products.department_name = departments.department_name GROUP BY departments.department_name ORDER BY departments.department_id",
+      (err, res) => {
+        if (err) throw err;
+        for (i = 0; i < res.length; i++) {
+          table.push([
+            res[i].department_id,
+            res[i].department_name,
+            res[i].over_head_costs,
+            res[i].sales
+            //res[i].profit
+          ]);
+        }
+        console.log(table.toString());
+        /*
+        connection.query("SELECT ", (err, res) => {
+            if(err) throw err;
+            for (i=0;i<res.length;i++) {
+                table.push([
+                    res[i].profit
+                ]);
+            }
+            console.log(table.toString());
+        });
+    
+        */
+      }
+      
+    );
 }
 
 function addDepartment() {

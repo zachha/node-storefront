@@ -39,7 +39,7 @@ function doAction(selection) {
       viewLowInv();
     },
     "Add to Inventory": function() {
-      addInv();
+      viewInv(addInv());
     },
     "Add New Product": function() {
       addProduct();
@@ -62,7 +62,7 @@ function viewInv(tableData) {
         }
         console.log(table.toString());
         tableData = res;
-    })
+    });
 }
 
 function viewLowInv() {
